@@ -1,5 +1,6 @@
 import 'dart:convert';
-
+import 'dart:math';
+import '../models/image_model.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -12,7 +13,7 @@ class HomeScreen extends StatefulWidget {
 
 class HomeSreenState extends State<HomeScreen> {
   final List<String> imageList = [];
-
+  int counter = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,6 +22,11 @@ class HomeSreenState extends State<HomeScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _getImage,
+        child: Icon(
+          Icons.add,
+          color: Colors.black,
+        ),
+        backgroundColor: Colors.yellow,
       ),
       body: Center(
         child: Container(
@@ -40,8 +46,13 @@ class HomeSreenState extends State<HomeScreen> {
   }
 
   _getImage() async {
+    counter++;
     final response =
-        await http.get('https://jsonplaceholder.typicode.com/photos/1');
+        await http.get('https://jsonplaceholder.typicode.com/photos/$counter');
     final parsedJson = json.decode(response.body);
+    ImageModel imageModel = new ImageModel.fromJson(parsedJson);
+    setState(() {
+      imageList.add(imageModel.url);
+    });
   }
 }

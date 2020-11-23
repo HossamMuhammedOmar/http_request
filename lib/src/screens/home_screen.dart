@@ -1,8 +1,8 @@
 import 'dart:convert';
-import 'dart:math';
 import '../models/image_model.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import '../widgets/image_list.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -12,7 +12,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class HomeSreenState extends State<HomeScreen> {
-  final List<String> imageList = [];
+  final List<ImageModel> imageList = [];
   int counter = 0;
   @override
   Widget build(BuildContext context) {
@@ -28,21 +28,8 @@ class HomeSreenState extends State<HomeScreen> {
         ),
         backgroundColor: Colors.yellow,
       ),
-      body: Center(
-        child: Container(
-          child: ListView.builder(
-            itemCount: imageList.length,
-            itemBuilder: (BuildContext context, int index) {
-              return _addImage(imageList[index]);
-            },
-          ),
-        ),
-      ),
+      body: ImageList(imageList),
     );
-  }
-
-  Widget _addImage(String image) {
-    return Image.network(image);
   }
 
   _getImage() async {
@@ -50,9 +37,9 @@ class HomeSreenState extends State<HomeScreen> {
     final response =
         await http.get('https://jsonplaceholder.typicode.com/photos/$counter');
     final parsedJson = json.decode(response.body);
-    ImageModel imageModel = new ImageModel.fromJson(parsedJson);
+    ImageModel imageModel = ImageModel.fromJson(parsedJson);
     setState(() {
-      imageList.add(imageModel.url);
+      imageList.add(imageModel);
     });
   }
 }
